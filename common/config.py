@@ -20,3 +20,12 @@ class App:
 
 CFG = App()
 MINIO = MinIOConf()
+
+
+@dataclass
+class TLC:
+    host: str = os.getenv("TLC_HOST", "data.cityofnewyork.us")
+    months: str = os.getenv("RAW_MONTHS", "2025-09")
+
+
+TLC_CFG = TLC()
