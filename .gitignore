@@ -85,6 +85,9 @@ ENV/
 env.bak/
 venv.bak/
 .venv/
+.env
+.env.*
+!.env.example
 
 # Spyder project settings
 spyderproject
