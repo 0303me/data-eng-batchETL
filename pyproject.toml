@@ -9,8 +9,8 @@ line-length = 100
 
 [tool.ruff]
 line-length = 100
-select = ["E","F","B","I","UP","C90"]
-ignore = ["D"]
+lint.select = ["E","F","B","I","UP","C90"]
+lint.ignore = ["D"]
 
 [tool.mypy]
 python_version = "3.12"
