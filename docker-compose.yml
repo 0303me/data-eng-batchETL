@@ -47,6 +47,7 @@ services:
     volumes:
       - ./infra/airflow/dags:/opt/airflow/dags
       - ./infra/airflow/plugins:/opt/airflow/plugins
+      - ./common:/opt/airflow/common
     ports: ["8080:8080"]
     command: bash -c "airflow db init && airflow users create -u admin -p admin -f Admin -l User -r Admin -e admin@example.com && airflow webserver & airflow scheduler"
 
