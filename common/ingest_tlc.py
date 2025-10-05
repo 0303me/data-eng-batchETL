@@ -9,6 +9,7 @@ from datetime import datetime
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+import requests  # type: ignore
 
 from .config import TLC_CFG
 from .io_s3 import put_bytes
@@ -72,8 +73,6 @@ def build_manifest(month: str, url: str, stats: IngestStats) -> dict[str, object
 def ingest_month(month: str) -> tuple[str, dict[str, object]]:
     url = _url_for(month)
     log.info("download_start", month=month, url=url)
-    import requests  # type: ignore
-
     r = requests.get(url, timeout=120)
     r.raise_for_status()
     raw_bytes = r.content
@@ -81,7 +80,7 @@ def ingest_month(month: str) -> tuple[str, dict[str, object]]:
 
     # Load with pyarrow to DataFrame for column validation; don’t mutate values
     table = pq.read_table(io.BytesIO(raw_bytes))
-    df = table.to_pandas(types_mapper=dict)  # Leave raw-ish types
+    df = table.to_pandas()  # Leave raw-ish types
     _validate_columns(df)
 
     # Re-write to Parquet to ensure uniform encoding & stats
