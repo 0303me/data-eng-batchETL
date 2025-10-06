@@ -70,10 +70,18 @@ def build_manifest(month: str, url: str, stats: IngestStats) -> dict[str, object
     }
 
 
-def ingest_month(month: str) -> tuple[str, dict[str, object]]:
+def ingest_month(month: str) -> tuple[str | None, dict[str, object]]:
     url = _url_for(month)
     log.info("download_start", month=month, url=url)
-    r = requests.get(url, timeout=120)
+
+    r = requests.head(url, timeout=30, allow_redirects=True)
+    if r.status_code in (403, 404):
+        log.info("skip_month", month=month, reason="not_published", url=url)
+        return None, {"status": "skipped", "reason": "not_published", "month": month, "url": url}
+
+    r.raise_for_status()
+
+    r = requests.get(url, timeout=30, stream=True)
     r.raise_for_status()
     raw_bytes = r.content
     sha = _sha256(raw_bytes)

@@ -35,7 +35,7 @@ with DAG(
         return ms
 
     @task()  # type: ignore[misc]
-    def maybe_ingest(month: str, force: bool = False) -> dict[str, str | bool | dict[str, object]]:
+    def maybe_ingest(month: str, force: bool = False) -> dict[str, object]:
         # Skip if manifest exists unless force
         if not force:
             try:
@@ -43,10 +43,13 @@ with DAG(
                     Bucket=os.environ.get("MINIO_BUCKET", "raw"), Key=manifest_key(month)
                 )
                 log.info("skip_existing", month=month)
-                return {"month": month, "skipped": True}
+                return {"month": month, "skipped": True, "reason": "manifest_exists"}
             except ClientError:
                 pass
         key, manifest = ingest_month(month)
+        if key is None:
+            # Month not yet published
+            return manifest
         return {"month": month, "skipped": False, "key": key, "manifest": manifest}
 
     months = plan_months()
