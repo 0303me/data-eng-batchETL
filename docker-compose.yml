@@ -74,6 +74,8 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES:-False}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PYTHONPATH: /opt/airflow
+      TLC_HOST: ${TLC_HOST}
+      RAW_MONTHS: ${RAW_MONTHS}
       _PIP_ADDITIONAL_REQUIREMENTS: >
         -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt
         boto3 structlog prometheus-client pyarrow pandas psycopg2-binary
@@ -97,6 +99,8 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES:-False}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PYTHONPATH: /opt/airflow
+      TLC_HOST: ${TLC_HOST}
+      RAW_MONTHS: ${RAW_MONTHS}
       _PIP_ADDITIONAL_REQUIREMENTS: >
         -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt
         boto3 structlog prometheus-client pyarrow pandas psycopg2-binary
