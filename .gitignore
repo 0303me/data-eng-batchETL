@@ -36,6 +36,7 @@ tox/
 nox/
 coverage
 coverage.*
+!coverage.yml
 cache
 nosetests.xml
 coverage.xml
