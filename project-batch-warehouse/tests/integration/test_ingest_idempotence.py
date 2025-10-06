@@ -35,5 +35,5 @@ def test_ingest_month_writes_manifest(mock_put: MagicMock, mock_get: MagicMock) 
     pq.write_table(pa.Table.from_pandas(df, preserve_index=False), sink)
     mock_get.return_value = DummyResp(sink.getvalue())
     key, manifest = ingest_month("2021-02")
-    assert "2021/" in key and "02/" in key
+    assert key is not None and "2021/" in key and "02/" in key
     assert manifest["rows"] == 1
