@@ -1,0 +1,15 @@
+project_batch_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /opt/airflow/dbt/warehouse.duckdb
+      threads: 4
+      extensions: ["httpfs", "parquet"]
+      settings:
+        s3_url_style: path
+    ci:
+      type: duckdb
+      path: warehouse_ci.duckdb
+      threads: 4
+      extensions: ["httpfs", "parquet"]

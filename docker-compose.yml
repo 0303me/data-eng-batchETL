@@ -46,12 +46,13 @@ services:
   airflow-init:
     image: apache/airflow:2.9.3
     environment:
+      PATH: /home/airflow/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES:-False}
       PYTHONPATH: /opt/airflow
       _PIP_ADDITIONAL_REQUIREMENTS: >
         -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt
-        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary
+        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary dbt-core dbt-duckdb
     user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
     depends_on:
       postgres:
@@ -61,6 +62,7 @@ services:
       - ./infra/airflow/plugins:/opt/airflow/plugins
       - ./common:/opt/airflow/common
       - ./infra/airflow/logs:/opt/airflow/logs
+      - ./project-batch-warehouse/dbt_project:/opt/airflow/dbt
     entrypoint: >
       /bin/bash -eo pipefail -c
       "airflow db init &&
@@ -71,6 +73,7 @@ services:
   airflow-webserver:
     image: apache/airflow:2.9.3
     environment:
+      PATH: /home/airflow/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES:-False}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PYTHONPATH: /opt/airflow
@@ -78,7 +81,7 @@ services:
       RAW_MONTHS: ${RAW_MONTHS}
       _PIP_ADDITIONAL_REQUIREMENTS: >
         -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt
-        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary
+        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary dbt-core dbt-duckdb
     user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
     depends_on:
       postgres:
@@ -90,12 +93,14 @@ services:
       - ./infra/airflow/plugins:/opt/airflow/plugins
       - ./common:/opt/airflow/common
       - ./infra/airflow/logs:/opt/airflow/logs
+      - ./project-batch-warehouse/dbt_project:/opt/airflow/dbt
     ports: ["8080:8080"]
     command: ["airflow", "webserver"]
 
   airflow-scheduler:
     image: apache/airflow:2.9.3
     environment:
+      PATH: /home/airflow/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES:-False}
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PYTHONPATH: /opt/airflow
@@ -103,7 +108,7 @@ services:
       RAW_MONTHS: ${RAW_MONTHS}
       _PIP_ADDITIONAL_REQUIREMENTS: >
         -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt
-        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary
+        boto3 structlog prometheus-client pyarrow pandas psycopg2-binary dbt-core dbt-duckdb
     user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
     depends_on:
       postgres:
@@ -115,6 +120,7 @@ services:
       - ./infra/airflow/plugins:/opt/airflow/plugins
       - ./common:/opt/airflow/common
       - ./infra/airflow/logs:/opt/airflow/logs
+      - ./project-batch-warehouse/dbt_project:/opt/airflow/dbt
     command: ["airflow", "scheduler"]
 
   metabase:

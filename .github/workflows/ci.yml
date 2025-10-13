@@ -13,6 +13,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install --upgrade pip
-      - run: pip install ruff black mypy pytest structlog prometheus-client boto3 pyarrow pandas requests pytest-cov pre-commit
+      - run: pip install ruff black mypy pytest structlog prometheus-client boto3 pyarrow pandas requests pytest-cov pre-commit dbt-core dbt-duckdb
       - run: pre-commit run --all-files
       - run: pytest -q
+      - run: |
+          cd project-batch-warehouse/dbt_project
+          dbt deps --profiles-dir .
+          dbt build --target ci --profiles-dir . --fail-fast

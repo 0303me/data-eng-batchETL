@@ -1,0 +1,11 @@
+version: 2
+sources:
+  - name: bronze
+    description: Raw parquet from MinIO (anonymous read)
+    tables:
+      - name: yellow_trips_parquet
+        description: All yellow trip parquet files under bronze/trips.
+        external:
+          location: "read_parquet('http://minio:9000/${MINIO_BUCKET}/bronze/trips/**/*.parquet')"
+          # DuckDB external source via httpfs
+          options: {}
